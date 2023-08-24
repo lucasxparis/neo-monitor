@@ -68,7 +68,7 @@ class VintedMonitor extends EventEmitter {
                 const itemsToSend = ((lastItemTimestamp && !isFirstSync) ? items.reverse() : [items[0]]);
                 if (itemsToSend.length > 0) {
                     db.set(`first`, true);
-                    if (this.debug) console.log(`${itemsToSend.length} ${itemsToSend.length > 1 ? 'nouveaux articles trouvés' : 'nouvel article trouvé'} pour la recherche: ${url}!\n`)
+                    // if (this.debug) console.log(`${itemsToSend.length} ${itemsToSend.length > 1 ? 'nouveaux articles trouvés' : 'nouvel article trouvé'} pour la recherche: ${url}!\n`)
                 }
 
                 for (const item of itemsToSend) {
