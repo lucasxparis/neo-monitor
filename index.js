@@ -9,7 +9,7 @@ const
 
 
 
-class VintedMoniteur extends EventEmitter {
+class VintedMonitor extends EventEmitter {
     constructor(obj) {
         super();
 
@@ -107,8 +107,5 @@ class VintedMoniteur extends EventEmitter {
 
         })
     }
-
-
-
 }
-module.exports = VintedMoniteur;
+module.exports = VintedMonitor;
