@@ -7,14 +7,11 @@ const
     } = require("./lib/api.js");
 
 
-
-
 class VintedMonitor extends EventEmitter {
     constructor(obj) {
         super();
 
         this.url = obj?.url;
-
         this.dbPath = obj?.dbPath;
         this.interval = obj?.interval ?? 5000;
         this.debug = obj?.debug ?? false;
@@ -22,7 +19,6 @@ class VintedMonitor extends EventEmitter {
         this.db = new Map();
         this.#init();
     }
-
 
     #init() {
         const
@@ -50,9 +46,18 @@ class VintedMonitor extends EventEmitter {
                     db = this.db,
                     url = this.url;
 
-                setTimeout(() => this.#search(), this.interval);
-                const
-                    res = await vintedSearch(url, this.proxy);
+                if (this.stopped) {
+                    return resolve(); // Stop further execution if the monitor has been stopped
+                }
+
+                this.timeout = setTimeout(() => this.#search(), this.interval);
+
+                const res = await vintedSearch(url, this.proxy);
+
+                if (this.stopped) {
+                    clearTimeout(this.timeout); // Clear the timeout if the monitor has been stopped
+                    return resolve();
+                }
                 if (!res?.items) return resolve();
                 const
                     isFirstSync = db.get(`first`),
@@ -102,10 +107,19 @@ class VintedMonitor extends EventEmitter {
                 resolve();
             } catch (error) {
                 if (this.debug) console.log(error);
-                return resolve()
+                return resolve();
             }
+        });
+    }
 
-        })
+    stop() {
+        // Set a flag to indicate that the monitor has been stopped
+        this.stopped = true;
+
+        // Clear the interval-based fetching by clearing the timeout
+        clearTimeout(this.timeout);
+
+        console.log("Stopping monitor")
     }
 }
 module.exports = VintedMonitor;
