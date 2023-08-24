@@ -83,7 +83,7 @@ class VintedMoniteur extends EventEmitter {
                         pp: item.photo?.url,
                         thumbnails: item.photo.thumbnails?.map(image => image.url),
                         color: item?.photo?.dominant_color,
-                        prix: `${item.price || 'vide'} ${item.currency || "EUR"} (${item.total_item_price || 'vide'})`,
+                        prix: `${item.price || 'vide'} ${item.currency || "EUR"}`,
                         taille: item.size_title || 'vide',
                         marque: item.brand_title || "vide",
                         stats: {
