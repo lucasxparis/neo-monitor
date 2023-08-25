@@ -1,5 +1,4 @@
 const
-    fs = require("fs"),
     EventEmitter = require('eventemitter3'),
     {
         parseVintedURL,
@@ -15,7 +14,7 @@ class VintedMonitor extends EventEmitter {
         this.dbPath = obj?.dbPath;
         this.interval = obj?.interval ?? 5000;
         this.debug = obj?.debug ?? false;
-        this.proxy = this.#proxy(obj?.proxy) ?? false;
+        this.proxy = false;
         this.db = new Map();
         this.#init();
     }
@@ -32,12 +31,6 @@ class VintedMonitor extends EventEmitter {
         };
     }
 
-    #proxy(listOrFile) {
-        if (!listOrFile) return;
-        if (typeof listOrFile === "object" && Array.isArray(listOrFile)) return listOrFile;
-        else if (fs.existsSync(listOrFile)) return fs.readFileSync(listOrFile)?.split("\n");
-        else return;
-    }
 
     #search() {
         return new Promise(async resolve => {
