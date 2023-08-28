@@ -1,4 +1,5 @@
 const
+    fs = require("fs"),
     EventEmitter = require('eventemitter3'),
     {
         parseVintedURL,
@@ -9,12 +10,11 @@ const
 class VintedMonitor extends EventEmitter {
     constructor(obj) {
         super();
-
         this.url = obj?.url;
         this.dbPath = obj?.dbPath;
         this.interval = obj?.interval ?? 5000;
         this.debug = obj?.debug ?? false;
-        this.proxy = false;
+        this.proxy = this.#proxy(obj?.proxy) ?? false;
         this.db = new Map();
         this.#init();
     }
@@ -31,6 +31,12 @@ class VintedMonitor extends EventEmitter {
         };
     }
 
+    #proxy(listOrFile) {
+        if (!listOrFile) return;
+        if (typeof listOrFile === "object" && Array.isArray(listOrFile)) return listOrFile;
+        else if (fs.existsSync(listOrFile)) return fs.readFileSync(listOrFile)?.split("\n");
+        else return;
+    }
 
     #search() {
         return new Promise(async resolve => {
@@ -89,6 +95,7 @@ class VintedMonitor extends EventEmitter {
                         },
                         timestamp: item?.photo?.high_resolution?.timestamp || false,
                         vendeur: {
+                            id: item.user.id,
                             name: item.user?.login || 'vide',
                             pp: item.user?.photo?.url,
                             url: item.user?.profile_url
